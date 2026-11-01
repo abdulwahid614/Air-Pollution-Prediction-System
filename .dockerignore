@@ -1,0 +1,40 @@
+
+# ملفات Git
+.git
+.gitignore
+
+# بيئة Python والملفات المؤقتة
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ملفات Jupyter
+*.ipynb
+
+# ملفات البيانات والتقارير غير المطلوبة لتشغيل API
+*.csv
+*.txt
+!requirements.txt
+
+# ملفات MLflow
+mlflow_artifacts/
+mlruns/
+mlartifacts/
+mlflow.db
+
+# النماذج البديلة غير المستخدمة حالياً
+models/
+lightgbm_pm25_model.pkl
+optimized_xgboost_pm25_model.pkl
+random_forest_pm25_model.pkl
+xgboost_pm25_model.pkl
+
+# ملفات البيئة والأسرار
+.env
+.env.*
+
+# ملفات النظام
+.DS_Store
+Thumbs.db

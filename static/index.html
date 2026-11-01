@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroPredict - Air Pollution PM2.5 Prediction System</title>
+    <meta name="description" content="Professional Machine Learning API and Interactive Web Interface for Atmospheric PM2.5 Air Pollution Prediction powered by XGBoost.">
+    
+    <!-- Design Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230d9488'><path d='M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-15zM2 6.5C2 5.67 2.67 5 3.5 5h17c.83 0 1.5.67 1.5 1.5S21.33 8 20.5 8h-17C2.67 8 2 7.33 2 6.5zm3.5 11C4.67 17.5 4 18.17 4 19s.67 1.5 1.5 1.5h13c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-13z'/></svg>">
+</head>
+<body>
+
+    <!-- ==================== Header ==================== -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/" class="header-brand" aria-label="AeroPredict Home">
+                <div class="brand-icon">💨</div>
+                <div class="brand-text">
+                    <h1 data-i18n="app_title">AeroPredict</h1>
+                    <span data-i18n="app_subtitle">Air Pollution PM2.5 Prediction System</span>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <!-- Live Health Status Badge -->
+                <div id="apiStatusBadge" class="status-badge" title="Live Model & API Status">
+                    <span id="apiStatusDot" class="status-dot"></span>
+                    <span id="apiStatusText" data-i18n="status_checking">Checking service...</span>
+                </div>
+
+                <!-- Dark / Light Theme Toggle -->
+                <button id="themeToggleBtn" class="btn-control" data-i18n-title="theme_toggle_label" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+
+                <!-- Arabic / English Language Switcher -->
+                <button id="langToggleBtn" class="btn-control" data-i18n-title="lang_toggle_label" aria-label="Switch Language">
+                    🌐 <span id="currentLangLabel">العربية</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== Main Content ==================== -->
+    <main class="main-content">
+
+        <!-- Hero & KPI Banner -->
+        <section class="hero-section">
+            <span class="hero-badge" data-i18n="hero_badge">XGBoost Machine Learning Pipeline</span>
+            <h2 class="hero-title" data-i18n="hero_title">Meteorological Air Quality Predictor</h2>
+            <p class="hero-desc" data-i18n="hero_desc">
+                Estimates fine particulate matter (PM2.5 concentration in µg/m³) based on atmospheric conditions, barometric pressure, dew point, temperature, and monitoring station location.
+            </p>
+
+            <!-- Verified KPI Metrics Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label" data-i18n="kpi_target">Target Variable</div>
+                    <div class="kpi-value" data-i18n="kpi_target_val">PM2.5 (µg/m³)</div>
+                    <div class="kpi-sub" data-i18n="kpi_target_sub">Fine Particulate Matter</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label" data-i18n="kpi_model">Trained Algorithm</div>
+                    <div class="kpi-value" data-i18n="kpi_model_val">XGBoost Regressor</div>
+                    <div class="kpi-sub" data-i18n="kpi_model_sub">500 Estimators • Depth 4</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label" data-i18n="kpi_rmse">Holdout RMSE</div>
+                    <div class="kpi-value" data-i18n="kpi_rmse_val">61.62 µg/m³</div>
+                    <div class="kpi-sub" data-i18n="kpi_rmse_sub">Verified on 20% Test Set</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label" data-i18n="kpi_mae">Holdout MAE</div>
+                    <div class="kpi-value" data-i18n="kpi_mae_val">42.95 µg/m³</div>
+                    <div class="kpi-sub" data-i18n="kpi_mae_sub">Mean Absolute Error</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard 2-Column Split -->
+        <div class="dashboard-grid">
+
+            <!-- Left Column: Prediction Form -->
+            <section class="card">
+                <div class="card-header">
+                    <h3 class="card-title" data-i18n="form_title">Environmental & Temporal Inputs</h3>
+                    <p class="card-subtitle" data-i18n="form_subtitle">
+                        Enter meteorological parameters or select an authentic historical preset
+                    </p>
+                </div>
+
+                <!-- Authentic Dataset Preset Scenarios -->
+                <div class="presets-bar">
+                    <span class="presets-label" data-i18n="preset_label">Load Verified Historical Sample:</span>
+                    <button type="button" class="preset-btn" data-preset="clean" data-i18n="preset_clean">
+                        Clean Air (US Embassy)
+                    </button>
+                    <button type="button" class="preset-btn" data-preset="moderate" data-i18n="preset_moderate">
+                        Moderate Air (US Embassy)
+                    </button>
+                    <button type="button" class="preset-btn" data-preset="heavy" data-i18n="preset_heavy">
+                        Severe Pollution (Aotizhongxin)
+                    </button>
+                </div>
+
+                <!-- Validation Alert Box -->
+                <div id="formAlert" class="alert-box hidden" role="alert"></div>
+
+                <!-- Prediction Form -->
+                <form id="predictionForm" novalidate>
+
+                    <!-- Group 1: Date & Time -->
+                    <fieldset class="form-fieldset">
+                        <legend class="fieldset-legend" data-i18n="field_group_time">
+                            📅 Observation Date & Time
+                        </legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="field_year" class="form-label" data-i18n="field_year">Year</label>
+                                <input type="number" id="field_year" class="form-input" min="2000" max="2100" value="2014" required>
+                                <span class="form-help" data-i18n="field_year_help">e.g. 2014</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="field_month" class="form-label" data-i18n="field_month">Month</label>
+                                <input type="number" id="field_month" class="form-input" min="1" max="12" value="6" required>
+                                <span class="form-help" data-i18n="field_month_help">1 to 12</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="field_day" class="form-label" data-i18n="field_day">Day</label>
+                                <input type="number" id="field_day" class="form-input" min="1" max="31" value="15" required>
+                                <span class="form-help" data-i18n="field_day_help">1 to 31</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="field_hour" class="form-label" data-i18n="field_hour">Hour</label>
+                                <input type="number" id="field_hour" class="form-input" min="0" max="23" value="12" required>
+                                <span class="form-help" data-i18n="field_hour_help">0 to 23</span>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 2: Weather Measurements -->
+                    <fieldset class="form-fieldset">
+                        <legend class="fieldset-legend" data-i18n="field_group_weather">
+                            🌡️ Atmospheric Measurements
+                        </legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="field_DEWP" class="form-label">
+                                    <span data-i18n="field_dewp">Dew Point</span>
+                                    <span class="unit" data-i18n="field_dewp_unit">°C</span>
+                                </label>
+                                <input type="number" id="field_DEWP" class="form-input" step="0.1" min="-60" max="50" value="10.0" required>
+                                <span class="form-help" data-i18n="field_dewp_help">-60 to 50 °C</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="field_TEMP" class="form-label">
+                                    <span data-i18n="field_temp">Temperature</span>
+                                    <span class="unit" data-i18n="field_temp_unit">°C</span>
+                                </label>
+                                <input type="number" id="field_TEMP" class="form-input" step="0.1" min="-50" max="60" value="25.0" required>
+                                <span class="form-help" data-i18n="field_temp_help">-50 to 60 °C</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="field_PRES" class="form-label">
+                                    <span data-i18n="field_pres">Pressure</span>
+                                    <span class="unit" data-i18n="field_pres_unit">hPa</span>
+                                </label>
+                                <input type="number" id="field_PRES" class="form-input" step="0.1" min="900" max="1100" value="1005.0" required>
+                                <span class="form-help" data-i18n="field_pres_help">900 to 1100 hPa</span>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 3: Monitoring Station -->
+                    <fieldset class="form-fieldset">
+                        <legend class="fieldset-legend" data-i18n="field_group_station">
+                            🏢 Air Quality Monitoring Station
+                        </legend>
+                        <div class="form-group">
+                            <label for="field_station" class="form-label" data-i18n="field_station">Select Monitoring Station</label>
+                            <select id="field_station" class="form-select" required>
+                                <option value="US_Embassy" selected data-i18n="station_usembassy">US Embassy (السفارة الأمريكية)</option>
+                                <option value="Aotizhongxin" data-i18n="station_aoti">Aotizhongxin (أوتيتشونغشين)</option>
+                            </select>
+                            <span class="form-help" data-i18n="field_station_help">Observation source for PM2.5 measurement</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Action Buttons -->
+                    <div class="form-actions">
+                        <button type="submit" id="predictBtn" class="btn-primary">
+                            <span class="spinner btn-spinner hidden" aria-hidden="true"></span>
+                            <span class="btn-text" data-i18n="btn_predict">Predict PM2.5 Concentration</span>
+                        </button>
+                        <button type="button" id="resetBtn" class="btn-secondary" data-i18n="btn_reset">
+                            Reset Form
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+
+            <!-- Right Column: Prediction Results -->
+            <section class="card">
+                <div class="card-header">
+                    <h3 class="card-title" data-i18n="result_title">Prediction Result</h3>
+                    <p class="card-subtitle" data-i18n="result_target_name">PM2.5 (Fine Particulate Matter)</p>
+                </div>
+
+                <!-- Result Placeholder (When awaiting input) -->
+                <div id="resultPlaceholder" class="result-placeholder">
+                    <div class="result-placeholder-icon">📊</div>
+                    <h4 data-i18n="result_placeholder_title">Awaiting Input</h4>
+                    <p data-i18n="result_placeholder_desc">
+                        Configure meteorological parameters on the left and click 'Predict PM2.5 Concentration' to run the model.
+                    </p>
+                </div>
+
+                <!-- Result Content (Populated on prediction) -->
+                <div id="resultContent" class="hidden">
+                    <div class="result-metric-box">
+                        <div class="result-target-label" data-i18n="result_target_label">
+                            Predicted Pollutant Concentration
+                        </div>
+                        <div class="result-val-row">
+                            <span id="resultPm25Value" class="result-val">--</span>
+                            <span class="result-unit" data-i18n="result_unit">µg/m³</span>
+                        </div>
+
+                        <!-- Continuous Regression Scale Representation -->
+                        <div class="scale-container">
+                            <div class="scale-track">
+                                <div id="resultScaleBar" class="scale-fill"></div>
+                            </div>
+                            <div class="scale-legend">
+                                <span>0 µg/m³</span>
+                                <span>150 µg/m³</span>
+                                <span>300+ µg/m³</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta details -->
+                    <div class="meta-badges">
+                        <span class="meta-badge" data-i18n="result_model_badge">XGBoost Regression Model</span>
+                        <span class="meta-badge">
+                            <span data-i18n="result_time_label">Latency:</span> <strong id="resultLatency">--</strong>
+                        </span>
+                        <span class="meta-badge">
+                            <span data-i18n="result_timestamp_label">Time:</span> <strong id="resultTimestamp">--</strong>
+                        </span>
+                    </div>
+
+                    <!-- Echoed Processed Inputs Summary -->
+                    <div style="margin-top: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);" data-i18n="result_inputs_summary">
+                            Processed Input Summary
+                        </h4>
+                        <div id="resultInputsSummary" class="inputs-summary-list"></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Visualizations & Analytics Section -->
+        <section class="card analytics-section">
+            <div class="analytics-header">
+                <div>
+                    <h3 class="card-title" data-i18n="analytics_title">Dataset Insights & Model Analytics</h3>
+                    <p class="card-subtitle" data-i18n="analytics_subtitle">
+                        Verified statistics extracted from the Beijing Combined dataset and trained XGBoost model
+                    </p>
+                </div>
+
+                <div class="chart-tabs">
+                    <button type="button" class="chart-tab-btn active" data-tab="monthly" data-i18n="tab_monthly">
+                        Monthly PM2.5 Cycle
+                    </button>
+                    <button type="button" class="chart-tab-btn" data-tab="hourly" data-i18n="tab_hourly">
+                        Diurnal Pollution Curve
+                    </button>
+                    <button type="button" class="chart-tab-btn" data-tab="importance" data-i18n="tab_importance">
+                        Feature Importance
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Chart Wrapper -->
+            <div class="chart-canvas-wrapper">
+                <canvas id="analyticsChartCanvas"></canvas>
+            </div>
+
+            <!-- Model Architecture Specifications -->
+            <div class="specs-grid">
+                <div class="spec-item" data-i18n="specs_dataset">
+                    Dataset: Beijing PM2.5 Combined Dataset (US Embassy & Aotizhongxin)
+                </div>
+                <div class="spec-item" data-i18n="specs_samples">
+                    Total Evaluated Records: 75,896 clean observations
+                </div>
+                <div class="spec-item" data-i18n="specs_split">
+                    Validation Split: 80% Chronological Train / 20% Holdout Test
+                </div>
+                <div class="spec-item" data-i18n="specs_algorithm">
+                    Algorithm: Extreme Gradient Boosting (XGBoost)
+                </div>
+                <div class="spec-item" data-i18n="specs_objective">
+                    Loss Function: reg:squarederror (RMSE)
+                </div>
+                <div class="spec-item" data-i18n="specs_features_count">
+                    Total Processed Features: 9 columns (One-Hot Encoded station)
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== Footer ==================== -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <span data-i18n="footer_text">
+                Air Pollution PM2.5 Prediction System • Powered by FastAPI & XGBoost
+            </span>
+            <div>
+                <a href="/docs" target="_blank" class="footer-link" data-i18n="footer_docs_link">
+                    Interactive Swagger API Docs
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/js/i18n.js"></script>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/app.js"></script>
+
+</body>
+</html>

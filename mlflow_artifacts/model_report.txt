@@ -1,0 +1,9 @@
+PM2.5 XGBoost Regression Report
+================================
+Train MAE: 36.3947
+Test MAE: 42.9502
+Test RMSE: 61.6209
+Test R2: 0.5348
+Training Time: 1.9202 seconds
+Prediction Time: 0.0496 seconds
+Model Size: 0.8226 MB

@@ -1,0 +1,47 @@
+BEIJING PM2.5 COMBINED DATASET - DATA QUALITY AUDIT
+==========================================================
+Master rows: 78,888
+Training-ready rows (PM2.5 observed): 75,896
+Columns: No, year, month, day, hour, PM2.5, station, DEWP, TEMP, PRES
+
+Rows by station:
+station
+US_Embassy      43824
+Aotizhongxin    35064
+
+Missing values in master:
+No            0
+year          0
+month         0
+day           0
+hour          0
+PM2.5      2992
+station       0
+DEWP          0
+TEMP          0
+PRES          0
+
+Missing PM2.5 by station:
+station
+Aotizhongxin     925
+US_Embassy      2067
+
+Date range by station:
+                    min                 max
+station                                    
+Aotizhongxin 2013-03-01 2017-02-28 23:00:00
+US_Embassy   2010-01-01 2014-12-31 23:00:00
+
+Duplicate station-timestamp pairs: 0
+Total overlapping timestamps between sources are retained as separate station records.
+
+Processing notes:
+- Vertical concatenation (row stacking), not a timestamp join.
+- US_Embassy is the PM2.5 monitoring source in the 2010-2014 PRSA file.
+- PRSA meteorological variables are documented as observations from Beijing Capital International Airport.
+- Aotizhongxin is the monitoring station in the 2013-2017 multi-site file.
+- PM2.5 missing values were NOT imputed; they remain missing in the master file.
+- Missing DEWP/TEMP/PRES values in Aotizhongxin (20 rows per column) were time-interpolated within that station only.
+- Training-ready file excludes rows with missing PM2.5; it is intended for supervised model training.
+- Units: PM2.5 (ug/m3), DEWP/TEMP (C), PRES (hPa).
+- The two source datasets have different monitoring locations and weather-data provenance; station/source is retained as a feature.
