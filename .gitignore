@@ -1,0 +1,23 @@
+# Docker image archive
+docker_pm25.tar
+
+# Large unused model
+random_forest_pm25_model.pkl
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# MLflow local tracking
+mlruns/
+mlflow.db
+
+# Environment variables
+.env
+
+# Logs
+*.log
